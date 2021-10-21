@@ -1,0 +1,293 @@
+services:
+
+  bazarr:
+    container_name: bazarr
+    image: ghcr.io/linuxserver/bazarr
+    volumes:
+      - /volume1/docker/bazarr:/config
+      - /volume1/data/media/movies:/movies
+      - /volume1/data/media/tv:/tv
+      - /volume1/data:/data
+    network_mode: bridge
+    ports:
+      - 6767:6767
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - DOCKER_MODS=ghcr.io/gilbn/theme.park:bazarr
+    restart: always
+
+  eclipse-mosquitto:
+    container_name: eclipse-mosquitto
+    image: eclipse-mosquitto
+    volumes:
+      - /volume1/docker/mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - /volume1/docker/mosquitto/data:/mosquitto/data
+      - /volume1/docker/mosquitto/log:/mosquitto/log
+    network_mode: bridge
+    ports:
+      - 1883:1883
+      - 9001:9001
+    restart: always
+
+  esphome:
+    container_name: esphome
+    image: esphome/esphome
+    volumes:
+      - /volume1/docker/hass-config/esphome:/config:rw
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - TZ=${TZ}
+    network_mode: host
+    restart: always
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    volumes:
+      - /volume1/docker/grafana:/var/lib/grafana:rw
+        #sudo chown 472 /volume1/docker/grafana
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: bridge
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_NAME=Main Org.
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_USERS_ALLOW_SIGN_UP=false
+    restart: always
+
+  ha-dockermon:
+    container_name: ha-dockermon
+    image: philhawthorne/ha-dockermon
+    volumes:
+      - /volume1/docker/ha-dockermon:/config
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: bridge
+    ports:
+      - 8126:8126
+    depends_on:
+      - home-assistant
+    restart: always
+
+  home-assistant:
+    container_name: home-assistant
+    image: ghcr.io/home-assistant/home-assistant
+    volumes:
+      - /volume1/docker/hass-config:/config
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/bus/usb:/dev/bus/usb
+      - /etc/localtime:/etc/localtime:ro
+    privileged: true
+    network_mode: host
+    depends_on:
+      - mariadb
+      - eclipse-mosquitto
+    restart: always
+
+  influxdb:
+    container_name: influxdb
+    image: influxdb
+    volumes:
+      - /volume1/docker/influxdb/db:/var/lib/influxdb2
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: bridge
+    ports:
+      - 8086:8086
+    restart: always
+
+  mariadb:
+    container_name: mariadb
+    image: mariadb
+    volumes:
+      - /volume1/docker/mariadb:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: bridge
+    ports:
+      - 3306:3306
+    environment:
+      - MARIADB_DATABASE=homeassistant
+      - MARIADB_ROOT_PASSWORD=${MARIADB_PASSWORD}
+      - MARIADB_USER=homeassistant
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+    restart: always
+
+  plex:
+    container_name: plex
+    image: ghcr.io/linuxserver/plex
+    volumes:
+      - /volume1/docker/plex/config:/config
+      - /volume1/data/media/tv:/tv
+      - /volume1/data/media/movies:/movies
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: host
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - VERSION=docker
+    restart: always
+
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce
+    volumes:
+      - /volume1/docker/portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    network_mode: bridge
+    ports:
+      - 8000:8000
+      - 9000:9000
+    restart: always
+
+  prowlarr:
+    container_name: prowlarr
+    image: ghcr.io/linuxserver/prowlarr:nightly
+    volumes:
+      - /volume1/docker/prowlarr:/config
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: bridge
+    ports:
+      - 9696:9696
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - DOCKER_MODS=ghcr.io/gilbn/theme.park:prowlarr
+    restart: always
+
+  radarr:
+    container_name: radarr
+    image: ghcr.io/linuxserver/radarr:nightly
+    volumes:
+      - /volume1/docker/radarr:/config
+      - /volume1/data/media/movies:/movies
+      - /volume1/data/downloads:/downloads
+      - /volume1/data:/data
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: bridge
+    ports:
+      - 7878:7878
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - UMASK=002
+      - DOCKER_MODS=ghcr.io/gilbn/theme.park:radarr
+    restart: always
+
+  sonarr:
+    container_name: sonarr
+    image: ghcr.io/linuxserver/sonarr
+    volumes:
+      - /volume1/docker/sonarr:/config
+      - /volume1/data/media/tv:/tv
+      - /volume1/data/downloads:/downloads
+      - /volume1/data:/data
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: bridge
+    ports:
+      - 8989:8989
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - UMASK=002
+      - DOCKER_MODS=ghcr.io/gilbn/theme.park:sonarr
+    restart: always
+
+  transmission-hass-proxy:
+    container_name: transmission-hass-proxy
+    image: haugene/transmission-openvpn-proxy
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: bridge
+    ports:
+      - 9092:8080
+    links:
+      - transmission-openvpn:transmission
+    labels:
+      - com.centurylinklabs.watchtower.depends-on=transmission-openvpn
+    restart: always
+
+  transmission-openvpn:
+    container_name: transmission-openvpn
+    image: haugene/transmission-openvpn:3.7.1
+    volumes:
+      - /volume1/docker/transmission-openvpn:/data
+      - /volume1/data/downloads:/downloads
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: bridge
+    ports:
+      - 9091:9091
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TRANSMISSION_UMASK=18
+      - TRANSMISSION_DOWNLOAD_DIR=/downloads
+      - TRANSMISSION_DOWNLOAD_QUEUE_SIZE=40
+      - TRANSMISSION_INCOMPLETE_DIR_ENABLED=false
+      - TRANSMISSION_PEER_LIMIT_GLOBAL=1000
+      - TRANSMISSION_PEER_LIMIT_PER_TORRENT=100
+      - OPENVPN_PROVIDER=OVPN
+      - OPENVPN_USERNAME=${OPENVPN_USERNAME}
+      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
+      - LOCAL_NETWORK=192.168.1.1/24
+      - TRANSMISSION_WEB_UI=combustion
+      - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    restart: always
+
+  transmission-seed:
+    container_name: transmission-seed
+    image: haugene/transmission-openvpn:3.7.1
+    volumes:
+      - /volume1/docker/transmission-seed:/data
+      - /volume1/temp/dump:/downloads
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: bridge
+    ports:
+      - 9191:9091
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TRANSMISSION_UMASK=18
+      - TRANSMISSION_DOWNLOAD_DIR=/downloads
+      - TRANSMISSION_DOWNLOAD_QUEUE_SIZE=40
+      - TRANSMISSION_INCOMPLETE_DIR_ENABLED=false
+      - TRANSMISSION_PEER_LIMIT_GLOBAL=1000
+      - TRANSMISSION_PEER_LIMIT_PER_TORRENT=100
+      - OPENVPN_PROVIDER=OVPN
+      - OPENVPN_USERNAME=${OPENVPN_USERNAME}
+      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
+      - LOCAL_NETWORK=192.168.1.1/24
+      - TRANSMISSION_WEB_UI=combustion
+      - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
+      - TRANSMISSION_RPC_AUTHENTICATION_REQUIRED=true
+      - TRANSMISSION_RPC_USERNAME=${TRANSMISSION_RPC_USERNAME}
+      - TRANSMISSION_RPC_PASSWORD=${TRANSMISSION_RPC_PASSWORD}
+      - TRANSMISSION_PEX_ENABLED=false
+      - TRANSMISSION_LPD_ENABLED=false
+      - TRANSMISSION_DHT_ENABLED=false
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    restart: always
+
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: bridge
+    command: --cleanup --interval 1 --run-once
