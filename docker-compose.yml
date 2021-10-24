@@ -42,25 +42,6 @@ services:
     network_mode: host
     restart: always
 
-  grafana:
-    container_name: grafana
-    image: grafana/grafana
-    volumes:
-      - /volume1/docker/grafana:/var/lib/grafana:rw
-        #sudo chown 472 /volume1/docker/grafana
-      - /etc/localtime:/etc/localtime:ro
-    network_mode: bridge
-    ports:
-      - 3000:3000
-    environment:
-      - GF_SECURITY_ALLOW_EMBEDDING=true
-      - GF_AUTH_ANONYMOUS_ENABLED=true
-      - GF_AUTH_ANONYMOUS_ORG_NAME=Main Org.
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
-      - GF_AUTH_DISABLE_LOGIN_FORM=true
-      - GF_USERS_ALLOW_SIGN_UP=false
-    restart: always
-
   ha-dockermon:
     container_name: ha-dockermon
     image: philhawthorne/ha-dockermon
@@ -92,13 +73,15 @@ services:
 
   influxdb:
     container_name: influxdb
-    image: influxdb
+    image: influxdb:1.8.10
     volumes:
-      - /volume1/docker/influxdb/db:/var/lib/influxdb2
+      - /volume1/docker/influxdb/:/var/lib/influxdb
       - /etc/localtime:/etc/localtime:ro
     network_mode: bridge
     ports:
       - 8086:8086
+    environment:
+      - INFLUXDB_DB=home_assistant
     restart: always
 
   mariadb:
