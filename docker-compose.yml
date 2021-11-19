@@ -115,18 +115,6 @@ services:
       - VERSION=docker
     restart: always
 
-  portainer:
-    container_name: portainer
-    image: portainer/portainer-ce
-    volumes:
-      - /volume1/docker/portainer:/data
-      - /var/run/docker.sock:/var/run/docker.sock
-    network_mode: bridge
-    ports:
-      - 8000:8000
-      - 9000:9000
-    restart: always
-
   prowlarr:
     container_name: prowlarr
     image: ghcr.io/linuxserver/prowlarr:nightly
@@ -218,8 +206,8 @@ services:
       - OPENVPN_PROVIDER=OVPN
       - OPENVPN_USERNAME=${OPENVPN_USERNAME}
       - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
-      - LOCAL_NETWORK=192.168.1.1/24
-      - TRANSMISSION_WEB_UI=combustion
+      - LOCAL_NETWORK=192.168.1.0/24
+      - TRANSMISSION_WEB_UI=flood-for-transmission
       - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
     logging:
       driver: json-file
@@ -251,8 +239,8 @@ services:
       - OPENVPN_PROVIDER=OVPN
       - OPENVPN_USERNAME=${OPENVPN_USERNAME}
       - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
-      - LOCAL_NETWORK=192.168.1.1/24
-      - TRANSMISSION_WEB_UI=combustion
+      - LOCAL_NETWORK=192.168.1.0/24
+      - TRANSMISSION_WEB_UI=flood-for-transmission
       - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
       - TRANSMISSION_RPC_AUTHENTICATION_REQUIRED=true
       - TRANSMISSION_RPC_USERNAME=${TRANSMISSION_RPC_USERNAME}
@@ -276,3 +264,17 @@ services:
     labels:
       - watchtower
     command: --cleanup --interval 1 --run-once
+
+  zigbee2mqtt:
+    container_name: zigbee2mqtt
+    image: koenkk/zigbee2mqtt
+    volumes:
+      - /volume1/docker/zigbee2mqtt:/app/data
+      - /run/udev:/run/udev:ro
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
+    privileged: true
+    network_mode: host
+    environment:
+      - TZ=${TZ}
+    restart: always
