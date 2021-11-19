@@ -273,4 +273,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /etc/localtime:/etc/localtime:ro
     network_mode: bridge
+    labels:
+      - watchtower
     command: --cleanup --interval 1 --run-once

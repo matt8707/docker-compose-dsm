@@ -35,8 +35,8 @@ docker-compose pull && \
 docker-compose down && \
 docker-compose up -d
 
-#delete all unused images
-docker image prune -af
+#delete unused (except watchtower)
+docker system prune -a --filter "label!=watchtower"
 
 #watchtower log
 docker logs -f --since 5m watchtower
