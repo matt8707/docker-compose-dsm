@@ -58,7 +58,7 @@ services:
 
   home-assistant:
     container_name: home-assistant
-    image: ghcr.io/home-assistant/home-assistant
+    image: homeassistant/home-assistant
     volumes:
       - /volume1/docker/hass-config:/config
       - /var/run/docker.sock:/var/run/docker.sock
