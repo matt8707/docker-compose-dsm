@@ -126,7 +126,7 @@ services:
 
   prowlarr:
     container_name: prowlarr
-    image: ghcr.io/linuxserver/prowlarr:nightly
+    image: ghcr.io/linuxserver/prowlarr:develop
     volumes:
       - /volume1/docker/prowlarr:/config
       - /etc/localtime:/etc/localtime:ro
@@ -141,7 +141,7 @@ services:
 
   radarr:
     container_name: radarr
-    image: ghcr.io/linuxserver/radarr:nightly
+    image: ghcr.io/linuxserver/radarr
     volumes:
       - /volume1/docker/radarr:/config
       - /volume1/data/media/movies:/movies
