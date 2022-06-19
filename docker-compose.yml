@@ -1,14 +1,5 @@
 services:
 
-  adguardhome:
-    container_name: adguardhome
-    image: adguard/adguardhome
-    volumes:
-      - /volume1/docker/adguardhome/work:/opt/adguardhome/work
-      - /volume1/docker/adguardhome/conf:/opt/adguardhome/conf
-    network_mode: host
-    restart: always
-
   bazarr:
     container_name: bazarr
     image: ghcr.io/linuxserver/bazarr
