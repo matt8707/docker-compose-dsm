@@ -51,6 +51,22 @@ services:
     network_mode: host
     restart: always
 
+  freshrss:
+    container_name: freshrss
+    image: freshrss/freshrss
+    volumes:
+      - /volume1/docker/freshrss:/var/www/FreshRSS/data
+    network_mode: bridge
+    ports:
+      - 8089:80
+    environment:
+      - TZ=${TZ}
+      - CRON_MIN=13,43
+    logging:
+      options:
+        max-size: 10m
+    restart: always
+
   ha-dockermon:
     container_name: ha-dockermon
     image: philhawthorne/ha-dockermon
