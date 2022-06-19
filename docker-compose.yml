@@ -202,16 +202,16 @@ services:
     ports:
       - 9092:8080
     links:
-      - transmission-openvpn:transmission
+      - transmission:transmission
     labels:
-      - com.centurylinklabs.watchtower.depends-on=transmission-openvpn
+      - com.centurylinklabs.watchtower.depends-on=transmission
     restart: always
 
-  transmission-openvpn:
-    container_name: transmission-openvpn
-    image: haugene/transmission-openvpn:3.7.1
+  transmission:
+    container_name: transmission
+    image: haugene/transmission-openvpn
     volumes:
-      - /volume1/docker/transmission-openvpn:/data
+      - /volume1/docker/transmission:/data
       - /volume1/data/downloads:/downloads
       - /etc/localtime:/etc/localtime:ro
     network_mode: bridge
@@ -219,7 +219,15 @@ services:
       - 9091:9091
     cap_add:
       - NET_ADMIN
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
     environment:
+      - OPENVPN_PROVIDER=${OVPN_PROVIDER}
+      - OPENVPN_CONFIG=${OVPN_CONFIG}
+      - OPENVPN_USERNAME=${OVPN_USERNAME}
+      - OPENVPN_PASSWORD=${OVPN_PASSWORD}
+      - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
+      - LOCAL_NETWORK=192.168.1.0/24
       - PUID=${PUID}
       - PGID=${PGID}
       - TRANSMISSION_UMASK=18
@@ -228,12 +236,7 @@ services:
       - TRANSMISSION_INCOMPLETE_DIR_ENABLED=false
       - TRANSMISSION_PEER_LIMIT_GLOBAL=1000
       - TRANSMISSION_PEER_LIMIT_PER_TORRENT=100
-      - OPENVPN_PROVIDER=OVPN
-      - OPENVPN_USERNAME=${OPENVPN_USERNAME}
-      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
-      - LOCAL_NETWORK=192.168.1.0/24
       - TRANSMISSION_WEB_UI=flood-for-transmission
-      - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
     logging:
       driver: json-file
       options:
@@ -242,7 +245,7 @@ services:
 
   transmission-seed:
     container_name: transmission-seed
-    image: haugene/transmission-openvpn:3.7.1
+    image: haugene/transmission-openvpn
     volumes:
       - /volume1/docker/transmission-seed:/data
       - /volume1/temp/dump:/downloads
@@ -252,7 +255,15 @@ services:
       - 9191:9091
     cap_add:
       - NET_ADMIN
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
     environment:
+      - OPENVPN_PROVIDER=${OVPN_PROVIDER}
+      - OPENVPN_CONFIG=${OVPN_CONFIG}
+      - OPENVPN_USERNAME=${OVPN_USERNAME}
+      - OPENVPN_PASSWORD=${OVPN_PASSWORD}
+      - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
+      - LOCAL_NETWORK=192.168.1.0/24
       - PUID=${PUID}
       - PGID=${PGID}
       - TRANSMISSION_UMASK=18
@@ -261,12 +272,7 @@ services:
       - TRANSMISSION_INCOMPLETE_DIR_ENABLED=false
       - TRANSMISSION_PEER_LIMIT_GLOBAL=1000
       - TRANSMISSION_PEER_LIMIT_PER_TORRENT=100
-      - OPENVPN_PROVIDER=OVPN
-      - OPENVPN_USERNAME=${OPENVPN_USERNAME}
-      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
-      - LOCAL_NETWORK=192.168.1.0/24
       - TRANSMISSION_WEB_UI=flood-for-transmission
-      - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
       - TRANSMISSION_RPC_AUTHENTICATION_REQUIRED=true
       - TRANSMISSION_RPC_USERNAME=${TRANSMISSION_RPC_USERNAME}
       - TRANSMISSION_RPC_PASSWORD=${TRANSMISSION_RPC_PASSWORD}
