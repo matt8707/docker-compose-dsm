@@ -35,7 +35,7 @@ services:
     container_name: esphome
     image: esphome/esphome
     volumes:
-      - /volume1/docker/hass-config/esphome:/config:rw
+      - /volume1/docker/esphome:/config:rw
       - /etc/localtime:/etc/localtime:ro
     environment:
       - TZ=${TZ}
