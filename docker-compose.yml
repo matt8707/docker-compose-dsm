@@ -193,9 +193,11 @@ services:
     ports:
       - 9092:8080
     links:
-      - transmission:transmission
+      - transmission
     labels:
       - com.centurylinklabs.watchtower.depends-on=transmission
+    depends_on:
+      - transmission
     restart: always
 
   transmission:
