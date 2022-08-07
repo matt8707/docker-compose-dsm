@@ -87,6 +87,16 @@ services:
       - eclipse-mosquitto
     restart: always
 
+  # hass-dev:
+  #   container_name: hass-dev
+  #   image: homeassistant/home-assistant
+  #   volumes:
+  #     - /volume1/docker/hass-dev:/config
+  #   network_mode: bridge
+  #   ports:
+  #     - 8124:8123
+  #   restart: unless-stopped
+
   influxdb:
     container_name: influxdb
     image: influxdb:1.8.10
@@ -144,6 +154,22 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - DOCKER_MODS=ghcr.io/gilbn/theme.park:prowlarr
+    restart: always
+
+  ps5-mqtt:
+    container_name: ps5-mqtt
+    image: ghcr.io/funkeyflo/ps5-mqtt/amd64:0.7.1
+    volumes:
+      - /volume1/docker/ps5-mqtt:/config
+    network_mode: host
+    entrypoint: /config/run.sh
+    environment:
+      - MQTT_HOST=${MQTT_HOST}
+      - DEVICE_CHECK_INTERVAL=5000
+      - DEVICE_DISCOVERY_INTERVAL=60000
+      - INCLUDE_PS4_DEVICES=false
+      - FRONTEND_PORT=8645
+      - CREDENTIAL_STORAGE_PATH=/config/credentials.json
     restart: always
 
   radarr:
