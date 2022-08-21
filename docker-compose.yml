@@ -158,7 +158,7 @@ services:
 
   ps5-mqtt:
     container_name: ps5-mqtt
-    image: ghcr.io/funkeyflo/ps5-mqtt/amd64:0.7.1
+    image: ghcr.io/funkeyflo/ps5-mqtt/amd64
     volumes:
       - /volume1/docker/ps5-mqtt:/config
     network_mode: host
@@ -170,6 +170,9 @@ services:
       - INCLUDE_PS4_DEVICES=false
       - FRONTEND_PORT=8645
       - CREDENTIAL_STORAGE_PATH=/config/credentials.json
+      - 'PSN_ACCOUNTS=[{"username": "PSN", "npsso":"${NPSSO}"}]'
+      - ACCOUNT_CHECK_INTERVAL=5000
+      - DEBUG=@ha:ps5:*
     restart: always
 
   radarr:
