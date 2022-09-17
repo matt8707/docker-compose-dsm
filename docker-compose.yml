@@ -170,8 +170,7 @@ services:
       - INCLUDE_PS4_DEVICES=false
       - FRONTEND_PORT=8645
       - CREDENTIAL_STORAGE_PATH=/config/credentials.json
-      - 'PSN_ACCOUNTS=[{"username": "PSN", "npsso":"${NPSSO}"}]'
-      - ACCOUNT_CHECK_INTERVAL=5000
+      - TZ=${TZ}
       - DEBUG=@ha:ps5:*
     restart: always
 
