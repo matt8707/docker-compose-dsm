@@ -58,20 +58,6 @@ services:
         max-size: 10m
     restart: always
 
-  ha-dockermon:
-    container_name: ha-dockermon
-    image: philhawthorne/ha-dockermon
-    volumes:
-      - /volume1/docker/ha-dockermon:/config
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/localtime:/etc/localtime:ro
-    network_mode: bridge
-    ports:
-      - 8126:8126
-    depends_on:
-      - home-assistant
-    restart: always
-
   home-assistant:
     container_name: home-assistant
     image: homeassistant/home-assistant
@@ -86,16 +72,6 @@ services:
       - mariadb
       - eclipse-mosquitto
     restart: always
-
-  # hass-dev:
-  #   container_name: hass-dev
-  #   image: homeassistant/home-assistant
-  #   volumes:
-  #     - /volume1/docker/hass-dev:/config
-  #   network_mode: bridge
-  #   ports:
-  #     - 8124:8123
-  #   restart: unless-stopped
 
   influxdb:
     container_name: influxdb
