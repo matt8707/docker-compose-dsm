@@ -73,19 +73,6 @@ services:
       - eclipse-mosquitto
     restart: always
 
-  influxdb:
-    container_name: influxdb
-    image: influxdb:1.8.10
-    volumes:
-      - /volume1/docker/influxdb/:/var/lib/influxdb
-      - /etc/localtime:/etc/localtime:ro
-    network_mode: bridge
-    ports:
-      - 8086:8086
-    environment:
-      - INFLUXDB_DB=home_assistant
-    restart: always
-
   mariadb:
     container_name: mariadb
     image: mariadb
