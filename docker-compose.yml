@@ -205,26 +205,23 @@ services:
       - NET_ADMIN
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
-    environment:
-      - OPENVPN_PROVIDER=${OVPN_PROVIDER}
-      - OPENVPN_CONFIG=${OVPN_CONFIG}
-      - OPENVPN_USERNAME=${OVPN_USERNAME}
-      - OPENVPN_PASSWORD=${OVPN_PASSWORD}
-      - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
-      - LOCAL_NETWORK=192.168.1.0/24
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TRANSMISSION_UMASK=18
-      - TRANSMISSION_DOWNLOAD_DIR=/downloads
-      - TRANSMISSION_DOWNLOAD_QUEUE_SIZE=40
-      - TRANSMISSION_INCOMPLETE_DIR_ENABLED=false
-      - TRANSMISSION_PEER_LIMIT_GLOBAL=1000
-      - TRANSMISSION_PEER_LIMIT_PER_TORRENT=100
-      - TRANSMISSION_WEB_UI=flood-for-transmission
-    logging:
-      driver: json-file
-      options:
-        max-size: 10m
+    environment: &env
+      OPENVPN_PROVIDER: ${OVPN_PROVIDER}
+      OPENVPN_CONFIG: ${OVPN_CONFIG}
+      OPENVPN_USERNAME: ${OVPN_USERNAME}
+      OPENVPN_PASSWORD: ${OVPN_PASSWORD}
+      OPENVPN_OPTS: --inactive 3600 --ping 10 --ping-exit 60
+      LOCAL_NETWORK: 192.168.1.0/24
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TRANSMISSION_UMASK: 18
+      TRANSMISSION_DOWNLOAD_DIR: /downloads
+      TRANSMISSION_DOWNLOAD_QUEUE_SIZE: 100
+      TRANSMISSION_INCOMPLETE_DIR_ENABLED: "false"
+      TRANSMISSION_PEER_LIMIT_GLOBAL: 1000
+      TRANSMISSION_PEER_LIMIT_PER_TORRENT: 100
+      TRANSMISSION_WEB_UI: flood-for-transmission
+      LOG_TO_STDOUT: "true"
     restart: always
 
   transmission-seed:
@@ -242,31 +239,13 @@ services:
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     environment:
-      - OPENVPN_PROVIDER=${OVPN_PROVIDER}
-      - OPENVPN_CONFIG=${OVPN_CONFIG}
-      - OPENVPN_USERNAME=${OVPN_USERNAME}
-      - OPENVPN_PASSWORD=${OVPN_PASSWORD}
-      - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
-      - LOCAL_NETWORK=192.168.1.0/24
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TRANSMISSION_UMASK=18
-      - TRANSMISSION_DOWNLOAD_DIR=/downloads
-      - TRANSMISSION_DOWNLOAD_QUEUE_SIZE=100
-      - TRANSMISSION_INCOMPLETE_DIR_ENABLED=false
-      - TRANSMISSION_PEER_LIMIT_GLOBAL=1000
-      - TRANSMISSION_PEER_LIMIT_PER_TORRENT=100
-      - TRANSMISSION_WEB_UI=flood-for-transmission
-      - TRANSMISSION_RPC_AUTHENTICATION_REQUIRED=true
-      - TRANSMISSION_RPC_USERNAME=${TRANSMISSION_RPC_USERNAME}
-      - TRANSMISSION_RPC_PASSWORD=${TRANSMISSION_RPC_PASSWORD}
-      - TRANSMISSION_PEX_ENABLED=false
-      - TRANSMISSION_LPD_ENABLED=false
-      - TRANSMISSION_DHT_ENABLED=false
-    logging:
-      driver: json-file
-      options:
-        max-size: 10m
+      <<: *env
+      TRANSMISSION_RPC_AUTHENTICATION_REQUIRED: "true"
+      TRANSMISSION_RPC_USERNAME: ${TRANSMISSION_RPC_USERNAME}
+      TRANSMISSION_RPC_PASSWORD: ${TRANSMISSION_RPC_PASSWORD}
+      # TRANSMISSION_PEX_ENABLED: "false"
+      # TRANSMISSION_LPD_ENABLED: "false"
+      # TRANSMISSION_DHT_ENABLED: "false"
     restart: always
 
   watchtower:
