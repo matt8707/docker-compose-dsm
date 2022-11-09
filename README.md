@@ -36,7 +36,7 @@ docker-compose down && \
 docker-compose up -d
 
 #delete unused (except watchtower)
-docker system prune -a --filter "label!=watchtower"
+docker system prune --volumes -af --filter "label!=watchtower"
 
 #watchtower log
 docker logs -f --since 5m watchtower
