@@ -187,22 +187,6 @@ services:
       - DOCKER_MODS=ghcr.io/gilbn/theme.park:sonarr
     restart: always
 
-  transmission-hass-proxy:
-    container_name: transmission-hass-proxy
-    image: haugene/transmission-openvpn-proxy
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-    network_mode: bridge
-    ports:
-      - 9092:8080
-    links:
-      - transmission
-    labels:
-      - com.centurylinklabs.watchtower.depends-on=transmission
-    depends_on:
-      - transmission
-    restart: always
-
   transmission:
     container_name: transmission
     image: haugene/transmission-openvpn
@@ -233,7 +217,21 @@ services:
       TRANSMISSION_PEER_LIMIT_GLOBAL: 1000
       TRANSMISSION_PEER_LIMIT_PER_TORRENT: 100
       TRANSMISSION_WEB_UI: flood-for-transmission
-      LOG_TO_STDOUT: "true"
+
+  transmission-openvpn-proxy:
+    container_name: transmission-openvpn-proxy
+    image: haugene/transmission-openvpn-proxy
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: bridge
+    ports:
+      - 9092:8080
+    links:
+      - transmission
+    labels:
+      - com.centurylinklabs.watchtower.depends-on=transmission
+    depends_on:
+      - transmission
     restart: always
 
   transmission-seed:
