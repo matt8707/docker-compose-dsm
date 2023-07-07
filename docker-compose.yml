@@ -139,7 +139,6 @@ services:
     volumes:
       - /volume1/docker/ps5-mqtt:/config
     network_mode: host
-    entrypoint: /config/run.sh
     environment:
       - MQTT_HOST=${MQTT_HOST}
       - DEVICE_CHECK_INTERVAL=5000
@@ -148,7 +147,9 @@ services:
       - FRONTEND_PORT=8645
       - CREDENTIAL_STORAGE_PATH=/config/credentials.json
       - TZ=${TZ}
+      # - PSN_ACCOUNTS=${PSN_ACCOUNTS}
       - DEBUG=@ha:ps5:*
+    entrypoint: /config/run.sh
     restart: always
 
   radarr:
