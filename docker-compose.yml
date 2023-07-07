@@ -105,16 +105,16 @@ services:
 
   plex:
     container_name: plex
-    image: ghcr.io/linuxserver/plex
+    image: lscr.io/linuxserver/plex
     volumes:
       - /volume1/docker/plex/config:/config
       - /volume1/data/media/tv:/tv
       - /volume1/data/media/movies:/movies
-      - /etc/localtime:/etc/localtime:ro
     network_mode: host
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
+      - TZ=${TZ}
       - VERSION=docker
     restart: always
 
