@@ -1,5 +1,4 @@
 services:
-
   bazarr:
     container_name: bazarr
     image: ghcr.io/linuxserver/bazarr
@@ -16,6 +15,23 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
       - DOCKER_MODS=ghcr.io/gilbn/theme.park:bazarr
+    restart: always
+
+  code-server:
+    container_name: code-server
+    image: lscr.io/linuxserver/code-server
+    volumes:
+      - /volume1/docker/code-server:/config
+      - /volume1/docker/hass-config:/config/workspace
+      - /var/services/homes/matte/docker-compose:/config/docker-compose
+    network_mode: bridge
+    ports:
+      - 8443:8443
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - DEFAULT_WORKSPACE=/config/workspace
     restart: always
 
   eclipse-mosquitto:
