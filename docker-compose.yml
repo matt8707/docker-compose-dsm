@@ -73,19 +73,18 @@ services:
         max-size: 10m
     restart: always
 
-  home-assistant:
-    container_name: home-assistant
-    image: homeassistant/home-assistant
+  homeassistant:
+    container_name: homeassistant
+    image: ghcr.io/home-assistant/home-assistant:stable
     volumes:
       - /volume1/docker/hass-config:/config
       - /var/run/docker.sock:/var/run/docker.sock
-      - /dev/bus/usb:/dev/bus/usb
-      - /etc/localtime:/etc/localtime:ro
-    privileged: true
     network_mode: host
+    environment:
+      - TZ=${TZ}
+    privileged: true
     depends_on:
       - mariadb
-      - eclipse-mosquitto
     restart: always
 
   mariadb:
