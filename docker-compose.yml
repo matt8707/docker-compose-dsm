@@ -194,6 +194,7 @@ services:
       - /volume1/docker/transmission:/data
       - /volume1/data/downloads:/downloads
       - /etc/localtime:/etc/localtime:ro
+      - /volume1/docker/transmission/scripts:/scripts
     network_mode: bridge
     ports:
       - 9091:9091
@@ -210,13 +211,13 @@ services:
       LOCAL_NETWORK: 192.168.1.0/24
       PUID: ${PUID}
       PGID: ${PGID}
-      TRANSMISSION_UMASK: 18
       TRANSMISSION_DOWNLOAD_DIR: /downloads
-      TRANSMISSION_DOWNLOAD_QUEUE_SIZE: 100
       TRANSMISSION_INCOMPLETE_DIR_ENABLED: "false"
-      TRANSMISSION_PEER_LIMIT_GLOBAL: 1000
-      TRANSMISSION_PEER_LIMIT_PER_TORRENT: 100
       TRANSMISSION_WEB_UI: flood-for-transmission
+      TRANSMISSION_PEX_ENABLED: "true"
+      TRANSMISSION_LPD_ENABLED: "true"
+      TRANSMISSION_DHT_ENABLED: "true"
+    restart: always
 
   transmission-openvpn-proxy:
     container_name: transmission-openvpn-proxy
