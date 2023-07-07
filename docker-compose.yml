@@ -242,6 +242,7 @@ services:
       - /volume1/docker/transmission-seed:/data
       - /volume1/temp/dump:/downloads
       - /etc/localtime:/etc/localtime:ro
+      - /volume1/docker/transmission/scripts:/scripts
     network_mode: bridge
     ports:
       - 9191:9091
@@ -254,9 +255,6 @@ services:
       TRANSMISSION_RPC_AUTHENTICATION_REQUIRED: "true"
       TRANSMISSION_RPC_USERNAME: ${TRANSMISSION_RPC_USERNAME}
       TRANSMISSION_RPC_PASSWORD: ${TRANSMISSION_RPC_PASSWORD}
-      # TRANSMISSION_PEX_ENABLED: "false"
-      # TRANSMISSION_LPD_ENABLED: "false"
-      # TRANSMISSION_DHT_ENABLED: "false"
     restart: always
 
   watchtower:
