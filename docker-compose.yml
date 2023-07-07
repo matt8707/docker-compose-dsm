@@ -120,16 +120,16 @@ services:
 
   prowlarr:
     container_name: prowlarr
-    image: ghcr.io/linuxserver/prowlarr:develop
+    image: ghcr.io/linuxserver/prowlarr
     volumes:
       - /volume1/docker/prowlarr:/config
-      - /etc/localtime:/etc/localtime:ro
     network_mode: bridge
     ports:
       - 9696:9696
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
+      - TZ=${TZ}
       - DOCKER_MODS=ghcr.io/gilbn/theme.park:prowlarr
     restart: always
 
