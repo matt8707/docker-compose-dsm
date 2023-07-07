@@ -153,20 +153,19 @@ services:
 
   radarr:
     container_name: radarr
-    image: ghcr.io/linuxserver/radarr
+    image: lscr.io/linuxserver/radarr
     volumes:
       - /volume1/docker/radarr:/config
       - /volume1/data/media/movies:/movies
       - /volume1/data/downloads:/downloads
       - /volume1/data:/data
-      - /etc/localtime:/etc/localtime:ro
     network_mode: bridge
     ports:
       - 7878:7878
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
-      - UMASK=002
+      - TZ=${TZ}
       - DOCKER_MODS=ghcr.io/gilbn/theme.park:radarr
     restart: always
 
