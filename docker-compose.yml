@@ -274,10 +274,10 @@ services:
     volumes:
       - /volume1/docker/zigbee2mqtt:/app/data
       - /run/udev:/run/udev:ro
-    devices:
-      - /dev/ttyACM0:/dev/ttyACM0
-    privileged: true
     network_mode: host
+    privileged: true
     environment:
       - TZ=${TZ}
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
     restart: always
