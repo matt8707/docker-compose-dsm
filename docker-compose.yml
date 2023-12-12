@@ -84,7 +84,8 @@ services:
       - TZ=${TZ}
     privileged: true
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
     restart: always
 
   mariadb:
@@ -101,6 +102,12 @@ services:
       - MARIADB_ROOT_PASSWORD=${MARIADB_PASSWORD}
       - MARIADB_USER=homeassistant
       - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mariadb-admin ping -h localhost -u root --password=$$MARIADB_ROOT_PASSWORD",
+        ]
     restart: always
 
   plex:
