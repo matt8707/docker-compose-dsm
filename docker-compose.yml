@@ -49,28 +49,12 @@ services:
 
   esphome:
     container_name: esphome
-    image: ghcr.io/esphome/esphome
+    image: ghcr.io/esphome/esphome:2022.8.3
     volumes:
       - /volume1/docker/esphome:/config
       - /etc/localtime:/etc/localtime:ro
     network_mode: host
     privileged: true
-    restart: always
-
-  freshrss:
-    container_name: freshrss
-    image: freshrss/freshrss
-    volumes:
-      - /volume1/docker/freshrss:/var/www/FreshRSS/data
-    network_mode: bridge
-    ports:
-      - 8089:80
-    environment:
-      - TZ=${TZ}
-      - CRON_MIN=13,43
-    logging:
-      options:
-        max-size: 10m
     restart: always
 
   homeassistant:
@@ -154,8 +138,6 @@ services:
       - FRONTEND_PORT=8645
       - CREDENTIAL_STORAGE_PATH=/config/credentials.json
       - TZ=${TZ}
-      # - PSN_ACCOUNTS=${PSN_ACCOUNTS}
-      - DEBUG=@ha:ps5:*
     entrypoint: /config/run.sh
     restart: always
 
@@ -210,21 +192,21 @@ services:
       - NET_ADMIN
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
-    environment: &env
-      OPENVPN_PROVIDER: ${OVPN_PROVIDER}
-      OPENVPN_CONFIG: ${OVPN_CONFIG}
-      OPENVPN_USERNAME: ${OVPN_USERNAME}
-      OPENVPN_PASSWORD: ${OVPN_PASSWORD}
-      OPENVPN_OPTS: --inactive 3600 --ping 10 --ping-exit 60
-      LOCAL_NETWORK: 192.168.1.0/24
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TRANSMISSION_DOWNLOAD_DIR: /downloads
-      TRANSMISSION_INCOMPLETE_DIR_ENABLED: "false"
-      TRANSMISSION_WEB_UI: flood-for-transmission
-      TRANSMISSION_PEX_ENABLED: "true"
-      TRANSMISSION_LPD_ENABLED: "true"
-      TRANSMISSION_DHT_ENABLED: "true"
+    environment:
+      - OPENVPN_PROVIDER=${OVPN_PROVIDER}
+      - OPENVPN_CONFIG=${OVPN_CONFIG}
+      - OPENVPN_USERNAME=${OVPN_USERNAME}
+      - OPENVPN_PASSWORD=${OVPN_PASSWORD}
+      - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
+      - LOCAL_NETWORK=192.168.1.0/24
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TRANSMISSION_DOWNLOAD_DIR=/downloads
+      - TRANSMISSION_INCOMPLETE_DIR_ENABLED="false"
+      - TRANSMISSION_WEB_UI=flood-for-transmission
+      - TRANSMISSION_PEX_ENABLED="true"
+      - TRANSMISSION_LPD_ENABLED="true"
+      - TRANSMISSION_DHT_ENABLED="true"
     restart: always
 
   transmission-openvpn-proxy:
@@ -241,28 +223,6 @@ services:
       - com.centurylinklabs.watchtower.depends-on=transmission
     depends_on:
       - transmission
-    restart: always
-
-  transmission-seed:
-    container_name: transmission-seed
-    image: haugene/transmission-openvpn
-    volumes:
-      - /volume1/docker/transmission-seed:/data
-      - /volume1/temp/dump:/downloads
-      - /etc/localtime:/etc/localtime:ro
-      - /volume1/docker/transmission/scripts:/scripts
-    network_mode: bridge
-    ports:
-      - 9191:9091
-    cap_add:
-      - NET_ADMIN
-    sysctls:
-      - net.ipv6.conf.all.disable_ipv6=0
-    environment:
-      <<: *env
-      TRANSMISSION_RPC_AUTHENTICATION_REQUIRED: "true"
-      TRANSMISSION_RPC_USERNAME: ${TRANSMISSION_RPC_USERNAME}
-      TRANSMISSION_RPC_PASSWORD: ${TRANSMISSION_RPC_PASSWORD}
     restart: always
 
   watchtower:
