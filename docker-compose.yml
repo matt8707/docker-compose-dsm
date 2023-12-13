@@ -184,7 +184,7 @@ services:
       - /volume1/docker/transmission:/data
       - /volume1/data/downloads:/downloads
       - /etc/localtime:/etc/localtime:ro
-      - /volume1/docker/transmission/scripts:/scripts
+      - /volume1/docker/transmission/config.json:/opt/transmission-ui/flood-for-transmission/config.json
     network_mode: bridge
     ports:
       - 9091:9091
