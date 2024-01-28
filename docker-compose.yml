@@ -249,7 +249,7 @@ services:
     privileged: true
     environment:
       - TZ=${TZ}
-      - ZIGBEE2MQTT_CONFIG_MQTT_SERVER=${MQTT_HOST}
+      - ZIGBEE2MQTT_CONFIG_MQTT_SERVER=mqtt://${MQTT_HOST}:1883
       - ZIGBEE2MQTT_CONFIG_MQTT_USER=${MQTT_USERNAME}
       - ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD=${MQTT_PASSWORD}
     devices:
